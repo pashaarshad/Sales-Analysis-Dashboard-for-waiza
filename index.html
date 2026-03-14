@@ -29,24 +29,23 @@
             <div class="p-4">
                 <h1 class="logo mb-5"><a href="index.html">Engineero <span>Analytics</span></a></h1>
                 <ul class="list-unstyled components mb-5">
-                    <li class="active">
+                    <li class="active nav-item" data-target="dashboard-view">
                         <a href="#"><i class="fa-solid fa-chart-line me-3"></i> Dashboard Overview</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa-solid fa-box-open me-3"></i> Product Analysis</a>
-                    </li>
-                    <li>
+
+                    <li class="nav-item" data-target="customer-view">
                         <a href="#"><i class="fa-solid fa-users me-3"></i> Customer Analysis</a>
                     </li>
-                    <li>
+                    <li class="nav-item" data-target="routing-view">
                         <a href="#"><i class="fa-solid fa-truck-fast me-3"></i> Routing Analysis</a>
                     </li>
-                    <li>
+                    <li class="nav-item" data-target="reports-view">
                         <a href="#"><i class="fa-solid fa-file-invoice me-3"></i> Reports</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa-solid fa-gear me-3"></i> Settings</a>
+                    <li class="nav-item" data-target="predictive-view">
+                        <a href="#"><i class="fa-solid fa-brain me-3"></i> Predictive AI</a>
                     </li>
+
                 </ul>
             </div>
         </nav>
@@ -58,12 +57,18 @@
                 <div class="user-profile d-flex align-items-center">
                     <div class="search-bar me-4 glass-input">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search orders, metrics...">
+                        <input type="text" id="searchInput" placeholder="Search orders, metrics...">
                     </div>
                     <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" alt="Admin"
                         class="rounded-circle profile-img">
                 </div>
             </div>
+
+            <!-- Views Container -->
+            <div id="views-container">
+            
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view-section active">
 
             <!-- KPI Cards -->
             <div class="row g-4 mb-4">
@@ -160,7 +165,7 @@
                     <div class="glass-panel p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="chart-title mb-0">Recent Shipping Orders</h5>
-                            <button class="btn btn-outline-light btn-sm btn-glass"><i
+                            <button id="exportBtn" class="btn btn-outline-light btn-sm btn-glass"><i
                                     class="fa-solid fa-download me-2"></i>Export CSV</button>
                         </div>
                         <div class="table-responsive">
@@ -184,6 +189,158 @@
                     </div>
                 </div>
             </div>
+            </div> <!-- End Dashboard View -->
+
+            <!-- Other Views Placeholders -->
+
+            <div id="customer-view" class="view-section d-none">
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="chart-container glass-panel h-100">
+                            <h5 class="chart-title mb-4"><i class="fa-solid fa-star text-warning me-2"></i> Customer Rating Breakdown</h5>
+                            <div style="height: 300px;">
+                                <canvas id="ratingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-container glass-panel h-100">
+                            <h5 class="chart-title mb-4"><i class="fa-solid fa-phone text-info me-2"></i> Customer Care Calls vs Discount</h5>
+                            <div style="height: 300px;">
+                                <canvas id="careChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="routing-view" class="view-section d-none">
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-12">
+                        <div class="chart-container glass-panel h-100">
+                            <h5 class="chart-title mb-4"><i class="fa-solid fa-truck-fast text-warning me-2"></i> Shipment Mode vs Weight Distribution</h5>
+                            <div style="height: 350px;">
+                                <canvas id="routingWeightChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reports-view" class="view-section d-none">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="glass-panel p-4">
+                            <h5 class="chart-title mb-4"><i class="fa-solid fa-file-invoice me-2 text-primary"></i> Custom Report Generator</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label text-white small">Report Focus</label>
+                                    <select class="form-select glass-select" id="reportType">
+                                        <option value="financial">Financial Overview</option>
+                                        <option value="performance">Logistics Performance</option>
+                                        <option value="customer">Customer Satisfaction</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white small">Dataset Scope</label>
+                                    <select class="form-select glass-select" id="reportRange">
+                                        <option value="1M">Recent 30 Days (Mock)</option>
+                                        <option value="3M">Quarterly Summary (Mock)</option>
+                                        <option value="1Y">Full Dataset Processing</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100 fw-bold" id="generateReportBtn"><i class="fa-solid fa-print me-2"></i> Generate Smart Summary</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-4" id="reportSummaryBox" style="display: none;">
+                        <div class="glass-panel p-4" style="background: rgba(31, 111, 235, 0.1); border-color: #1f6feb;">
+                            <h5 class="text-white mb-3" id="reportTitle">AI Generated Summary Report</h5>
+                            <p class="text-muted" id="reportText" style="line-height: 1.7; font-size: 15px;">Generating...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="predictive-view" class="view-section d-none">
+                <div class="row g-4 mt-1">
+                    <div class="col-lg-5">
+                        <div class="glass-panel p-4 h-100">
+                            <h4 class="mb-4 text-info"><i class="fa-solid fa-wand-magic-sparkles me-2"></i> Delivery Simulator</h4>
+                            <p class="text-muted mb-4 small">Select shipping parameters to predict the probability of on-time delivery using our custom JavaScript analysis model.</p>
+                            
+                            <form id="predictionForm">
+                                <div class="mb-3">
+                                    <label class="form-label text-white small mb-1">Mode of Shipment</label>
+                                    <select class="form-select glass-select" id="predMode">
+                                        <option value="Flight">Flight</option>
+                                        <option value="Ship">Ship</option>
+                                        <option value="Road">Road</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-white small mb-1">Product Importance</label>
+                                    <select class="form-select glass-select" id="predImportance">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 mt-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label class="form-label text-white small mb-1">Weight (grams)</label>
+                                        <span class="text-info small fw-bold" id="weightVal">3000 g</span>
+                                    </div>
+                                    <input type="range" class="form-range" id="predWeight" min="1000" max="6000" step="100" value="3000">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label text-white small mb-1">Warehouse Block</label>
+                                    <select class="form-select glass-select" id="predBlock">
+                                        <option value="A">Block A</option>
+                                        <option value="B">Block B</option>
+                                        <option value="C">Block C</option>
+                                        <option value="D">Block D</option>
+                                        <option value="F">Block F</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-info w-100 fw-bold" id="btnPredict"><i class="fa-solid fa-microchip me-2"></i> Predict Delivery Status</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-7">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center" id="predictionResult">
+                            <i class="fa-solid fa-robot fa-4x text-muted mb-3 opacity-50"></i>
+                            <h5 class="text-muted">Awaiting Input...</h5>
+                            <p class="text-muted small">Input parameters and run the prediction engine to see logistics analysis.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Future Sales Simulation Dataset -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                         <div class="glass-panel p-4">
+                             <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div>
+                                    <h5 class="mb-1 text-warning"><i class="fa-solid fa-chart-line me-2"></i> Custom Data Generator & Forecasting</h5>
+                                    <p class="text-muted small mb-0">Generate a custom dataset array to project global average revenue using our regression logic.</p>
+                                </div>
+                                <button class="btn btn-outline-warning btn-sm btn-glass px-4" id="runForecastBtn"><i class="fa-solid fa-play me-2"></i> Generate & Forecast</button>
+                             </div>
+                             <div style="height: 300px;">
+                                 <canvas id="forecastChart"></canvas>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            </div> <!-- End Views Container -->
         </div>
     </div>
 
